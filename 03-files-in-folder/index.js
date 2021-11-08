@@ -3,7 +3,6 @@ const path = require('path');
 
 class ReadFolder {
 	fpath = ""
-	data = ""
 
 //#############################################################################
 constructor(fn){
@@ -24,7 +23,7 @@ async readFolder() {
 					console.log( fn+"	 -	 "+ext.replace(".", "")+"	 -	 "+sz+" kb." );
 				});
 			//	console.log(dirent.name);
-				console.log(dirent.dir);
+			//	console.log(dirent.dir);
 			}
 		}
 	} catch (err) {
