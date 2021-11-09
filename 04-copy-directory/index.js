@@ -17,18 +17,6 @@ constructor(from, to){
 //#############################################################################
 async readFolder() {
 	try {
-		//	this.mkFolder( this.tpath );
-	//	let isF = false;
-	//	await fs.access( this.tpath , error => {
-	//		if (!error) 	isF = true;	
-	//	});
-		
-	//	if( isF ) {
-	//	fs.rmdir( this.tpath, { recursive: true, force: true }, (err) => {
-	//			if(err) console.log( "Error:rem Folder: "+err );
-	//			console.log( "====	====	remove Dir	====	====" );
-	//		});
-	//	}
 //	await this.rmFolder().then( async ()=> {
 //		this.mkFolder().then( async ()=> {
 		await this.mkFolder( this.tpath );
@@ -41,10 +29,7 @@ async readFolder() {
 				const fp_write = path.join(this.tpath, dirent.name);
 
 				await this.copyFile( fp_read, fp_write );
-			//	const f_dt = await this.readFile( fp_read );
-			//	this.writeFile( fp_write, f_dt );
-			//	this.writeFile( fp_write, await this.readFile( fp_read ) );
-				console.log( fp_read+" >>> "+fp_write );
+			//	console.log( fp_read+" >>> "+fp_write );
 			//	console.log(dirent.name);
 			}
 		}
@@ -57,26 +42,43 @@ async readFolder() {
 }
 //#############################################################################
 mkFolder( d_path = this.tpath ) {
-	return new Promise((resolve, reject) => {
-	fs.access( d_path , error => {
-		if (!error) {
-		//	fs.rmdir( d_path, { recursive: true, force: true }, (err) => {
-		//		if(err) console.log( "Error:rem Folder: "+err );
-		//		console.log( "====	====	remove Dir	====	====" );
-		//	});		
-		}
-	});
+//	return new Promise((resolve, reject) => {
+	//fs.access( d_path , error => {
 		fs.mkdir( d_path, { recursive: true }, (err) => {
-				if(err)	console.log( "Error:mk Folder: "+err );
-				console.log( "====	====	Create Dir		====	====" );
+	//	if (!error) {
+	//		fs.rmdir( d_path, { recursive: true, force: true }, (err) => {
+	//			if(err) console.log( "Error:rem Folder: "+err );
+	//			console.log( "====	====	remove Dir	====	====" );
+	//		});		
+	//	}
 		});
-				
+		this.remFolder(d_path).then(()=>{	
+			fs.mkdir( d_path, { recursive: true }, (err) => {
+				if(err)	console.log( "Error:mk Folder: "+err );
+			//	console.log( "====	====	Create Dir		====	====" );
+			});
+		});
+//		resolve("");
+//	});
+}
+remFolder( d_path = this.tpath ) {
+	return new Promise( (resolve, reject) => {
+		const dir = fs.readdir(d_path, (err, files) => {
+			files.forEach( el => {
+			fs.unlink( path.join(d_path, el), (err) => {
+				if (err) console.log(err);
+			//	else console.log("delete: "+el);
+			});
+		//	if(err) throw err;
+		//	console.log('В папке находятся файлы:' + files);
+			});
+		});
 		resolve("");
 	});
 }
 //#############################################################################
 copyFile( fp_read, fp_write ) {
-	let dt = null;
+	let dt = "";
 	let readStream = fs.createReadStream( fp_read );
 	readStream.setEncoding("UTF8");
 
@@ -99,6 +101,7 @@ copyFile( fp_read, fp_write ) {
 	});
 }
 //#############################################################################
+/*
 readFile( fp ) {
 	let dt = null;
 	let readStream = fs.createReadStream( fp );
@@ -117,7 +120,7 @@ readFile( fp ) {
 	readStream.on("error", (error) => {
 		console.log( error.stack );
 	});
-}
+}*/
 //#############################################################################
 writeFile( fp, dt = "" ) {
 	//	let writeStream = fs.createWriteStream( fp, {flags:'a'} );
